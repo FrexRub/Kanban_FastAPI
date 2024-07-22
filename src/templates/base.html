@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+        <title>{% block title %}{% endblock %} - My Kanban</title>
+    {% endblock %}
+</head>
+<body>
+    <nav class="flex justify-between text-3xl my-3">
+        <ul class="flex ml-10">
+            <li>Kanban</li>
+        </ul>
+        <ul class="flex gap-5 mr-10">
+            <li>
+                <a href="{{ url_for('users:registration') }}">Регистрация</a>
+            </li>
+            <li>Вход</li>
+        </ul>
+    </nav>
+    <hr>
+    <div id="content">{% block content %} {% endblock %}</div>
+</body>
+</html>
