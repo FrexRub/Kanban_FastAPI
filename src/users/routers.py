@@ -26,3 +26,8 @@ def registration_form(request: Request) -> HTMLResponse:
 @router.post("/postdata")
 def postdata(username=Form(), userage=Form()):
     return {"name": username, "age": userage}
+
+
+@router.post("/regdata")
+def regdata(username=Form(), email=Form()):
+    return {"name": username, "email": email}

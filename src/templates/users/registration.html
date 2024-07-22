@@ -146,11 +146,19 @@
       <button type="submit" class="submit-btn">Log in</button>
     </form>
 
-    <form id="register" class="form">
-      <input type="text" class="input-filed" placeholder="User Id">
-      <input type="email" class="input-filed" placeholder="Email Id">
-      <input type="text" class="input-filed" placeholder="Password">
-      <input type="checkbox" class="check-box"><span>I agree to the terms & conditions</span>
+    <form id="register" class="form" action="regdata" method="post">
+        <p>
+            Name:<br>
+            <input name="username" />
+        </p>
+        <p>
+            email:<br>
+            <input name="email" />
+        </p>
+        <p>
+            Password:<br>
+            <input name="Password" />
+        </p>
       <button type="submit" class="submit-btn">Register</button>
     </form>
   </div>
