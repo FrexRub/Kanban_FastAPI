@@ -6,15 +6,17 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sess
 from sqlalchemy.orm import DeclarativeBase
 
 from src.users import User
+from src.core import BASE_DIR, setting
 
 
 class Base(DeclarativeBase):
     pass
 
 
-DATABASE_URL = "sqlite+aiosqlite:///./kanban.db"
-
-engine = create_async_engine(DATABASE_URL)
+engine = create_async_engine(
+    url=setting.db.url,
+    echo=setting.db.echo,
+)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
 
