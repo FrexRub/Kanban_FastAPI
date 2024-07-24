@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import HTMLResponse
+from aiohttp import ClientSession
 
 from core.config import templates
 
@@ -20,8 +21,18 @@ def registration_form(request: Request) -> HTMLResponse:
 
 
 @router.post("/postdata")
-def postdata(username=Form(), userage=Form()):
-    return {"name": username, "age": userage}
+async def postdata(username=Form(), email=Form(), password=Form()):
+    async with ClientSession() as session:
+        url = 'http://127.0.0.1:8000/auth/register'
+        params = {'username': username, 'email': email, 'password': password}
+
+        async with session.post(
+                url=url,
+                data=params,
+                headers={"Content-Type": "application/json"}
+        ) as response:
+            return_json = await response.json()
+    return return_json
 
 
 @router.post("/regdata")

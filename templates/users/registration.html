@@ -136,13 +136,16 @@
     <form id="login" class="form" action="postdata" method="post">
         <p>
             Name:<br>
-            <input name="username" />
+            <input name="username" required/>
         </p>
         <p>
-            Age:<br>
-            <input name="userage" type="number" />
+            Email:<br>
+            <input name="email" type="email" />
         </p>
-
+        <p>
+            Password:<br>
+            <input name="password" type="password" minlength="8" required/>
+        </p>
       <button type="submit" class="submit-btn">Log in</button>
     </form>
 
