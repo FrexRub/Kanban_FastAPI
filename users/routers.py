@@ -24,17 +24,40 @@ def registration_form(request: Request) -> HTMLResponse:
 async def postdata(username=Form(), email=Form(), password=Form()):
     async with ClientSession() as session:
         url = 'http://127.0.0.1:8000/auth/register'
+        params = {
+            'grant_type': 'password',
+            'username': email,
+            'password': password,
+            'email': email,
+            'scope': '',
+            'client_id': 'string',
+            'client_secret': 'string'
+        }
+        async with session.post(
+                url=url,
+                json=params
+        ) as response:
+            return_json = await response.json()
+    return return_json
+    # return {'username': username, 'email': email}
+
+@router.post("/regdata")
+def regdata(username=Form(), email=Form()):
+    return {"name": username, "email": email}
+
+
+@router.post("/proba")
+async def proba(username=Form(), email=Form(), password=Form()):
+    async with ClientSession() as session:
+        url = 'http://127.0.0.1:8000/users/postdata'
         params = {'username': username, 'email': email, 'password': password}
 
         async with session.post(
                 url=url,
                 data=params,
-                headers={"Content-Type": "application/json"}
+                headers={"Content-Type": "application/x-www-form-urlencoded"}
         ) as response:
             return_json = await response.json()
+            print(return_json)
     return return_json
-
-
-@router.post("/regdata")
-def regdata(username=Form(), email=Form()):
-    return {"name": username, "email": email}
+    # return {'username': username, 'email': email}
