@@ -41,8 +41,9 @@ app.include_router(
     tags=["users"],
 )
 
-# current_user = fastapi_users.current_user()
+current_user = fastapi_users.current_user()
 current_active_user = fastapi_users.current_user(active=True)
+
 
 @app.get("/authenticated-route")
 async def authenticated_route(user: User = Depends(current_active_user)):
