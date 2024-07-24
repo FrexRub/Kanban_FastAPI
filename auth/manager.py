@@ -33,7 +33,8 @@ async def get_user_manager(user_db=Depends(get_user_db)):
     yield UserManager(user_db)
 
 
-#
+# BearerTransport
+
 # bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 #
 # auth_backend = AuthenticationBackend(
@@ -42,6 +43,8 @@ async def get_user_manager(user_db=Depends(get_user_db)):
 #     get_strategy=get_jwt_strategy,
 # )
 
+
+# Использование Cookie
 
 cookie_transport = CookieTransport(
     cookie_name="bonds",

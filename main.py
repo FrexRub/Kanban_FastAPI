@@ -8,6 +8,7 @@ from core.config import templates
 from users.models import User
 from auth import get_user_manager, auth_backend, UserRead, UserCreate, UserUpdate
 
+
 fastapi_users = FastAPIUsers[User, int](
     get_user_manager,
     [auth_backend],
