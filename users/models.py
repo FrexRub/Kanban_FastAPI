@@ -9,7 +9,7 @@ from core.database import Base, get_async_session
 
 class User(SQLAlchemyBaseUserTable[int], Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    username: Mapped[str]
+    user: Mapped[str]
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):

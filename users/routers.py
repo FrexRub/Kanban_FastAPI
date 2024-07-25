@@ -53,7 +53,6 @@ async def postdata(email=Form(), password=Form()):
         url = "http://127.0.0.1:8000/auth/jwt/login"
         params = {
             "username": email,
-            "email": email,
             "password": password,
         }
         async with session.post(url=url, json=params) as response:
