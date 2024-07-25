@@ -1,5 +1,7 @@
+import requests
+
 from fastapi import APIRouter, Request, Form
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from aiohttp import ClientSession
 
 from core.config import templates
@@ -20,48 +22,20 @@ def registration_form(request: Request) -> HTMLResponse:
     )
 
 
-# @router.post("/postdata")
-# async def postdata(username=Form(), email=Form(), password=Form()):
-#     async with ClientSession() as session:
-#         url = 'http://127.0.0.1:8000/auth/register'
-#         params = {
-#             'grant_type': 'password',
-#             'username': email,
-#             'password': password,
-#             'email': email,
-#             'scope': '',
-#             'client_id': 'string',
-#             'client_secret': 'string'
-#         }
-#         async with session.post(
-#                 url=url,
-#                 json=params
-#         ) as response:
-#             return_json = await response.json()
-#     return return_json
-
-
-@router.post("/postdata")
-async def postdata(email=Form(), password=Form()):
+@router.post("/postdata", response_class=JSONResponse)
+async def postdata(username=Form(), password=Form()):
     """
     Вход (логинг) в приложение
-    :param email:
+    :param username:
     :param password:
     :return:
     """
+    data = {"username": "user1@example.com", "password": "1qaz!QAZ"}
     async with ClientSession() as session:
         url = "http://127.0.0.1:8000/auth/jwt/login"
-        params = {
-            "username": email,
-            "password": password,
-        }
-        async with session.post(url=url, json=params) as response:
-            return_json = await response.json()
+        async with session.post(url=url, data=data) as response:
+            return_json = await response.json(content_type=None)
     return return_json
-    # return {
-    #     "username": email,
-    #     "password": password,
-    # }
 
 
 @router.post("/regdata")
@@ -83,3 +57,4 @@ async def regdata(username=Form(), email=Form(), password=Form()):
         async with session.post(url=url, json=params) as response:
             return_json = await response.json()
     return return_json
+
