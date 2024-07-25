@@ -20,44 +20,67 @@ def registration_form(request: Request) -> HTMLResponse:
     )
 
 
+# @router.post("/postdata")
+# async def postdata(username=Form(), email=Form(), password=Form()):
+#     async with ClientSession() as session:
+#         url = 'http://127.0.0.1:8000/auth/register'
+#         params = {
+#             'grant_type': 'password',
+#             'username': email,
+#             'password': password,
+#             'email': email,
+#             'scope': '',
+#             'client_id': 'string',
+#             'client_secret': 'string'
+#         }
+#         async with session.post(
+#                 url=url,
+#                 json=params
+#         ) as response:
+#             return_json = await response.json()
+#     return return_json
+
+
 @router.post("/postdata")
-async def postdata(username=Form(), email=Form(), password=Form()):
+async def postdata(email=Form(), password=Form()):
+    """
+    Вход (логинг) в приложение
+    :param email:
+    :param password:
+    :return:
+    """
     async with ClientSession() as session:
-        url = 'http://127.0.0.1:8000/auth/register'
+        url = "http://127.0.0.1:8000/auth/jwt/login"
         params = {
-            'grant_type': 'password',
-            'username': email,
-            'password': password,
-            'email': email,
-            'scope': '',
-            'client_id': 'string',
-            'client_secret': 'string'
+            "username": email,
+            "email": email,
+            "password": password,
         }
-        async with session.post(
-                url=url,
-                json=params
-        ) as response:
+        async with session.post(url=url, json=params) as response:
             return_json = await response.json()
     return return_json
-    # return {'username': username, 'email': email}
+    # return {
+    #     "username": email,
+    #     "password": password,
+    # }
+
 
 @router.post("/regdata")
-def regdata(username=Form(), email=Form()):
-    return {"name": username, "email": email}
-
-
-@router.post("/proba")
-async def proba(username=Form(), email=Form(), password=Form()):
+async def regdata(username=Form(), email=Form(), password=Form()):
+    """
+    Регистрация пользователя
+    :param username:
+    :param email:
+    :param password:
+    :return:
+    """
     async with ClientSession() as session:
-        url = 'http://127.0.0.1:8000/users/postdata'
-        params = {'username': username, 'email': email, 'password': password}
-
-        async with session.post(
-                url=url,
-                data=params,
-                headers={"Content-Type": "application/x-www-form-urlencoded"}
-        ) as response:
+        url = "http://127.0.0.1:8000/auth/register"
+        params = {
+            "username": username,
+            "password": password,
+            "email": email,
+        }
+        async with session.post(url=url, json=params) as response:
             return_json = await response.json()
-            print(return_json)
     return return_json
-    # return {'username': username, 'email': email}

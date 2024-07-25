@@ -135,6 +135,18 @@
 
     <form id="login" class="form" action="postdata" method="post">
         <p>
+            Email:<br>
+            <input name="email" type="email" />
+        </p>
+        <p>
+            Password:<br>
+            <input name="password" type="password" required/>
+        </p>
+      <button type="submit" class="submit-btn">Log in</button>
+    </form>
+
+    <form id="register" class="form" action="regdata" method="post">
+        <p>
             Name:<br>
             <input name="username" required/>
         </p>
@@ -145,22 +157,6 @@
         <p>
             Password:<br>
             <input name="password" type="password" minlength="8" required/>
-        </p>
-      <button type="submit" class="submit-btn">Log in</button>
-    </form>
-
-    <form id="register" class="form" action="regdata" method="post">
-        <p>
-            Name:<br>
-            <input name="username" />
-        </p>
-        <p>
-            email:<br>
-            <input name="email" />
-        </p>
-        <p>
-            Password:<br>
-            <input name="Password" />
         </p>
       <button type="submit" class="submit-btn">Register</button>
     </form>
