@@ -34,7 +34,9 @@ async def postdata(username=Form(), password=Form()):
     async with ClientSession() as session:
         url = "http://127.0.0.1:8000/auth/jwt/login"
         async with session.post(url=url, data=data) as response:
-            return_json = await response.json(content_type=None)
+            # return_json = await response.json(content_type=None)
+            return_json = await response.text()
+            print(return_json)
     return return_json
 
 
@@ -57,4 +59,3 @@ async def regdata(username=Form(), email=Form(), password=Form()):
         async with session.post(url=url, json=params) as response:
             return_json = await response.json()
     return return_json
-
