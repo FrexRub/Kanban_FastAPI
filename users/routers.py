@@ -76,7 +76,7 @@ async def regdata(username=Form(), email=Form(), password=Form()):
     async with ClientSession() as session:
         url = "http://127.0.0.1:8000/auth/register"
         params = {
-            "username": username,
+            "user": username,
             "password": password,
             "email": email,
         }
