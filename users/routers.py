@@ -10,11 +10,6 @@ from core.config import templates
 router = APIRouter(tags=["User"])
 
 
-@router.get("/", response_class=HTMLResponse)
-def index_user():
-    return "<h1> Hello </h1>"
-
-
 @router.get("/registration", name="users:registration", response_class=HTMLResponse)
 def registration_form(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(
@@ -42,3 +37,29 @@ async def regdata(username=Form(), email=Form(), password=Form()):
         async with session.post(url=url, json=params) as response:
             return_json = await response.json()
     return return_json
+
+
+@router.post("/test", response_class=JSONResponse)
+# async def test(username=Form(), password=Form()):
+def test():
+    """
+    Вход (логинг) в приложение
+    :param username:
+    :param password:
+    :return:
+    """
+    data = {"username": "user1@example.com", "password": "1qaz!QAZ"}
+    # r = requests.post(
+    #     "http://127.0.0.1:8000/auth/jwt/login",
+    #     auth=("user1@example.com", "1qaz!QAZ"),
+    #     verify=False,
+    # )
+    r = requests.post("http://127.0.0.1:8000/auth/jwt/login", data=data)
+    print(r.status_code)
+    # async with ClientSession() as session:
+    #     url = "http://127.0.0.1:8000/auth/jwt/login"
+    #     async with session.post(url=url, data=data) as response:
+    #         # return_json = await response.json(content_type=None)
+    #         print(response.status)
+    #         # return_json = await response.text()
+    return "Ok"

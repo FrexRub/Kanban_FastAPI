@@ -10,6 +10,8 @@ BASE_DIR = Path(__file__).parent.parent
 
 DB_PATH = BASE_DIR / "kanban.db"
 
+SECRET = "secret-key"
+
 
 class DbSetting(BaseModel):
     url: str = f"sqlite+aiosqlite:///{DB_PATH}"
