@@ -6,7 +6,8 @@ from aiohttp import ClientSession
 
 from core.config import templates
 
-router = APIRouter(prefix="/users", tags=["User"])
+# router = APIRouter(prefix="/users", tags=["User"])
+router = APIRouter(tags=["User"])
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -20,24 +21,6 @@ def registration_form(request: Request) -> HTMLResponse:
         request=request,
         name="users/registration.html",
     )
-
-
-@router.post("/postdata", response_class=JSONResponse)
-async def postdata(username=Form(), password=Form()):
-    """
-    Вход (логинг) в приложение
-    :param username:
-    :param password:
-    :return:
-    """
-    data = {"username": "user1@example.com", "password": "1qaz!QAZ"}
-    async with ClientSession() as session:
-        url = "http://127.0.0.1:8000/auth/jwt/login"
-        async with session.post(url=url, data=data) as response:
-            # return_json = await response.json(content_type=None)
-            return_json = await response.text()
-            print(return_json)
-    return return_json
 
 
 @router.post("/regdata")
