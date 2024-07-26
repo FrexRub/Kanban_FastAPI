@@ -11,6 +11,7 @@ BASE_DIR = Path(__file__).parent.parent
 DB_PATH = BASE_DIR / "kanban.db"
 
 SECRET = "secret-key"
+lifetime_seconds = 3600
 
 
 class DbSetting(BaseModel):
