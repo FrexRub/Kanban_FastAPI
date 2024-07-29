@@ -3,6 +3,8 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
 
+format_log = "%(levelname)s | %(name)s | %(asctime)s | %(lineno)d | %(message)s"
+
 templates = Jinja2Templates("templates")
 
 
@@ -12,6 +14,7 @@ DB_PATH = BASE_DIR / "kanban.db"
 
 SECRET = "secret-key"
 lifetime_seconds = 3600
+COOKIE_NAME = "bonds"
 
 
 class DbSetting(BaseModel):
