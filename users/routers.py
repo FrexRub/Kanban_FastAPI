@@ -84,6 +84,11 @@ def getPrivateendpoint():
     return "You are an authentciated user"
 
 
+# @app.get("/protected-route")
+# async def protected_route(user: User = Depends(current_user)):
+#     return f"Hello, {user.email}"
+
+
 # @router.post("/regdata")
 # async def regdata(username=Form(), email=Form(), password=Form()):
 #     """

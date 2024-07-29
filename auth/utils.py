@@ -1,5 +1,3 @@
-from typing import TYPE_CHECKING
-
 from fastapi import Response
 import bcrypt
 import jwt
