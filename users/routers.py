@@ -23,6 +23,7 @@ def registration_form(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(
         request=request,
         name="users/registration.html",
+        context={"text_status": "!!!!!!"}
     )
 
 
