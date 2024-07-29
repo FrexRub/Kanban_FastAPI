@@ -42,7 +42,14 @@ async def add_user_to_db(
         await session.commit()
     except SQLAlchemyError as exc:
         logger.exception(exc)
-        print(exc)
+        raise ExceptDB(f"Error in DB")
     else:
         logger.info("User add in db")
-    return user.id
+        return user.id
+
+
+    # except InvalidTokenError as exc:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED,
+    #         detail=f"invalid token error exception: {exc}"
+    #     )

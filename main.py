@@ -1,17 +1,12 @@
 import uvicorn
 from fastapi import FastAPI, Request, Depends
 from fastapi.responses import HTMLResponse
-from fastapi_users import FastAPIUsers
 
 from users.routers import router as router_user
 from core.config import templates
 from users.models import User
-from auth import get_user_manager, auth_backend, UserRead, UserCreate, UserUpdate
-
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend],
-)
+from auth import auth_backend, UserRead, UserCreate, UserUpdate
+from auth.dependencies import fastapi_users, current_active_user
 
 app = FastAPI()
 
@@ -40,14 +35,6 @@ app.include_router(
     prefix="/users",
     tags=["users"],
 )
-
-current_user = fastapi_users.current_user()
-current_active_user = fastapi_users.current_user(active=True)
-
-
-@app.get("/authenticated-route")
-async def authenticated_route(user: User = Depends(current_active_user)):
-    return {"message": f"Hello {user.email}!"}
 
 
 @app.get("/", name="main:index", response_class=HTMLResponse)

@@ -7,10 +7,13 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import templates, lifetime_seconds
+from core.exceptions import ExceptDB
 from users.crud import get_user_from_db, add_user_to_db
+from users.models import User
 from core.database import get_async_session
 from auth.utils import validate_password, create_hash_password, encode_jwt, set_cookie
-from users.models import User
+from auth.dependencies import current_active_user
+
 
 router = APIRouter(prefix="/users", tags=["User"])
 
@@ -25,10 +28,10 @@ def registration_form(request: Request) -> HTMLResponse:
 
 @router.post("/regdata", response_class=JSONResponse)
 async def regdata(
-    username=Form(),
-    email=Form(),
-    password=Form(),
-    session: AsyncSession = Depends(get_async_session),
+        username=Form(),
+        email=Form(),
+        password=Form(),
+        session: AsyncSession = Depends(get_async_session),
 ):
     hash_password = create_hash_password(password).decode()
     user: User = User(
@@ -39,14 +42,21 @@ async def regdata(
         is_superuser=False,
         is_verified=False,
     )
-    id: int = await add_user_to_db(session=session, user=user)
-    return {"id": id}
+    try:
+        id: int = await add_user_to_db(session=session, user=user)
+    except ExceptDB as exc:
+        raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f"invalid add user in DB: {exc}"
+            )
+    else:
+        return {"id": id}
 
 
 @router.post("/login", name="users:login", response_class=JSONResponse)
 async def login(
-    data: OAuth2PasswordRequestForm = Depends(),
-    session: AsyncSession = Depends(get_async_session),
+        data: OAuth2PasswordRequestForm = Depends(),
+        session: AsyncSession = Depends(get_async_session),
 ):
     username = data.username
     password = data.password
@@ -59,8 +69,8 @@ async def login(
         )
 
     if not validate_password(
-        password=password,
-        hashed_password=user.hashed_password.encode(),
+            password=password,
+            hashed_password=user.hashed_password.encode(),
     ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -74,20 +84,14 @@ async def login(
     payload["exp"] = expire
     access_token = encode_jwt(payload)
 
-    resp = RedirectResponse(url="/users/private", status_code=status.HTTP_302_FOUND)
+    resp = RedirectResponse(url="/users/protected-route", status_code=status.HTTP_302_FOUND)
     set_cookie(resp, access_token)
     return resp
 
 
-@router.get("/private")
-def getPrivateendpoint():
-    return "You are an authentciated user"
-
-
-# @app.get("/protected-route")
-# async def protected_route(user: User = Depends(current_user)):
-#     return f"Hello, {user.email}"
-
+@router.get("/protected-route")
+async def protected_route(user: User = Depends(current_active_user)):
+    return f"Hello, {user.email}"
 
 # @router.post("/regdata")
 # async def regdata(username=Form(), email=Form(), password=Form()):
