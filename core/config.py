@@ -1,12 +1,11 @@
+import logging
+
 from pathlib import Path
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
 
-format_log = "%(levelname)s | %(name)s | %(asctime)s | %(lineno)d | %(message)s"
-
 templates = Jinja2Templates("templates")
-
 
 BASE_DIR = Path(__file__).parent.parent
 
@@ -15,6 +14,14 @@ DB_PATH = BASE_DIR / "kanban.db"
 SECRET = "secret-key"
 lifetime_seconds = 3600
 COOKIE_NAME = "bonds"
+
+
+def configure_logging(level=logging.INFO):
+    logging.basicConfig(
+        level=level,
+        datefmt="%Y-%m-%d %H:%M:%S",
+        format="[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s",
+    )
 
 
 class DbSetting(BaseModel):

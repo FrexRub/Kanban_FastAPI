@@ -7,14 +7,11 @@ from sqlalchemy.engine import Result
 
 from users.models import User
 from core.exceptions import ExceptDB
-from core.config import format_log
+from core.config import configure_logging
 
 
+configure_logging(logging.DEBUG)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(format_log)
-logger.addHandler(console_handler)
 
 
 async def get_user_from_db(
@@ -46,7 +43,6 @@ async def add_user_to_db(
     else:
         logger.info("User add in db")
         return user.id
-
 
     # except InvalidTokenError as exc:
     #     raise HTTPException(

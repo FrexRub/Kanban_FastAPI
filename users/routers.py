@@ -23,17 +23,27 @@ def registration_form(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(
         request=request,
         name="users/registration.html",
-        context={"text_status": "!!!!!!"}
     )
 
 
 @router.post("/regdata", response_class=JSONResponse)
 async def regdata(
-        username=Form(),
-        email=Form(),
-        password=Form(),
-        session: AsyncSession = Depends(get_async_session),
+    request: Request,
+    username=Form(),
+    email=Form(),
+    password=Form(),
+    session: AsyncSession = Depends(get_async_session),
 ):
+    find_user: User = await get_user_from_db(name=email, session=session)
+    if find_user:
+        return templates.TemplateResponse(
+            request=request,
+            name="error.html",
+            context={
+                "title_error": "Проблема при регистрации клиента",
+                "text_error": "Клиент с данным email уже существует",
+            },
+        )
     hash_password = create_hash_password(password).decode()
     user: User = User(
         user=username,
@@ -46,18 +56,26 @@ async def regdata(
     try:
         id: int = await add_user_to_db(session=session, user=user)
     except ExceptDB as exc:
-        raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=f"invalid add user in DB: {exc}"
-            )
+        # raise HTTPException(
+        #         status_code=status.HTTP_401_UNAUTHORIZED,
+        #         detail=f"invalid add user in DB: {exc}"
+        #     )
+        return templates.TemplateResponse(
+            request=request,
+            name="error.html",
+            context={
+                "title_error": "Проблема при регистрации клиента",
+                "text_error": "Ошибка записи ДБ, попробуйте попозже",
+            },
+        )
     else:
         return {"id": id}
 
 
 @router.post("/login", name="users:login", response_class=JSONResponse)
 async def login(
-        data: OAuth2PasswordRequestForm = Depends(),
-        session: AsyncSession = Depends(get_async_session),
+    data: OAuth2PasswordRequestForm = Depends(),
+    session: AsyncSession = Depends(get_async_session),
 ):
     username = data.username
     password = data.password
@@ -70,8 +88,8 @@ async def login(
         )
 
     if not validate_password(
-            password=password,
-            hashed_password=user.hashed_password.encode(),
+        password=password,
+        hashed_password=user.hashed_password.encode(),
     ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -85,7 +103,9 @@ async def login(
     payload["exp"] = expire
     access_token = encode_jwt(payload)
 
-    resp = RedirectResponse(url="/users/protected-route", status_code=status.HTTP_302_FOUND)
+    resp = RedirectResponse(
+        url="/users/protected-route", status_code=status.HTTP_302_FOUND
+    )
     set_cookie(resp, access_token)
     return resp
 
@@ -93,6 +113,7 @@ async def login(
 @router.get("/protected-route")
 async def protected_route(user: User = Depends(current_active_user)):
     return f"Hello, {user.email}"
+
 
 # @router.post("/regdata")
 # async def regdata(username=Form(), email=Form(), password=Form()):
