@@ -1,14 +1,17 @@
 from datetime import datetime
+from typing import Optional
 
-from pydantic import BaseModel
-
-
-class TaskBase(BaseModel):
-    task: int
-    date_exp: datetime
+from pydantic import BaseModel, ConfigDict
 
 
-class TaskOut(TaskBase):
+class TaskCreate(BaseModel):
+    task: str
+    date_exp: Optional[datetime] = None
+
+
+class TaskRead(TaskCreate):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     date_create: datetime
     user_id: int

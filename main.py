@@ -1,9 +1,10 @@
 import uvicorn
+import logging
 from fastapi import FastAPI, Request, Depends
 from fastapi.responses import HTMLResponse
 
 from users.routers import router as router_user
-from core.config import templates
+from core.config import templates, configure_logging
 from auth import auth_backend, UserRead, UserCreate, UserUpdate
 from auth.dependencies import fastapi_users
 from tasks.router import router as router_task
@@ -47,4 +48,5 @@ def main_index(request: Request) -> HTMLResponse:
 
 
 if __name__ == "__main__":
+    configure_logging(logging.INFO)
     uvicorn.run("main:app", reload=True)
