@@ -4,13 +4,14 @@ from fastapi.responses import HTMLResponse
 
 from users.routers import router as router_user
 from core.config import templates
-from users.models import User
 from auth import auth_backend, UserRead, UserCreate, UserUpdate
-from auth.dependencies import fastapi_users, current_active_user
+from auth.dependencies import fastapi_users
+from tasks.router import router as router_task
 
 app = FastAPI()
 
 app.include_router(router_user)
+app.include_router(router_task)
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
