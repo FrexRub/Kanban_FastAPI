@@ -39,7 +39,7 @@ async def add_user_to_db(
         await session.commit()
     except SQLAlchemyError as exc:
         logger.exception(exc)
-        raise ExceptDB(f"Error in DB")
+        raise ExceptDB("Error in DB")
     else:
         logger.info("User add in db")
         return user.id

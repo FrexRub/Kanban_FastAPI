@@ -65,7 +65,7 @@ async def regdata(
             name="error.html",
             context={
                 "title_error": "Проблема при регистрации клиента",
-                "text_error": "Ошибка записи ДБ, попробуйте попозже",
+                "text_error": "Ошибка записи БД, попробуйте попозже",
             },
         )
     else:

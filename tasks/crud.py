@@ -10,12 +10,13 @@ from tasks.models import Task
 from tasks.schemas import TaskOut
 from users.crud import get_user_from_db
 from core.config import configure_logging
+from core.exceptions import ExceptDB
 
 if TYPE_CHECKING:
     from users.models import User
 
 
-configure_logging(logging.DEBUG)
+configure_logging(logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -28,4 +29,6 @@ async def get_all_tasks_user(session: AsyncSession, username: str) -> list[TaskO
         user_tasks: list[TaskOut] = result.scalars().all()
     except SQLAlchemyError as exp:
         logger.exception("Error find all tasks user %s", username)
-    return user_tasks
+        raise ExceptDB("Error in DB")
+    else:
+        return user_tasks

@@ -19,6 +19,4 @@ class Task(Base):
     date_exp: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
 
-    user: Mapped["User"] = relationship(
-        back_populates="user", cascade="all, delete-orphan", passive_deletes=True
-    )
+    user: Mapped["User"] = relationship(back_populates="task")
