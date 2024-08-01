@@ -30,15 +30,14 @@ async def get_task_user(
     return res
 
 
-# @router.post("/task", response_model=TaskRead)
-@router.post("/task")
+@router.post("/task", response_model=TaskRead)
 async def add_new_task(
     request: Request,
-    task: TaskCreate = Depends(),
+    task: TaskCreate,
     session: AsyncSession = Depends(get_async_session),
-):
+) -> TaskRead:
     try:
-        new_task = await add_new_task_bd(
+        new_task: TaskRead = await add_new_task_bd(
             session=session, username="frex@mail.ru", task=task
         )
     except ExceptDB:

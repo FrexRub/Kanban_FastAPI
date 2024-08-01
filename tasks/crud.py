@@ -46,9 +46,11 @@ async def add_new_task_bd(
         logger.info("Not found in bd user %s", username)
         raise ExceptDB("User not found")
 
-    new_task = Task(**task.model_dump())
+    new_task = Task(
+        **task.model_dump()
+    )  # pydantic модель преобразовываем м словарь и его распаковываем в экземпляр класса БД
     new_task.user_id = user.id
     session.add(new_task)
     await session.commit()
-    print(new_task)
-    return new_task
+    logger.info(f"new task {new_task}")
+    return TaskRead.model_validate(new_task)  # загружаем запись БД в модель pydantic

@@ -16,7 +16,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user: Mapped[str]
 
-    task: Mapped["Task"] = relationship(
+    tasks: Mapped["Task"] = relationship(
         back_populates="user", cascade="all, delete-orphan", passive_deletes=True
     )
 

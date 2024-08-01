@@ -19,4 +19,10 @@ class Task(Base):
     date_exp: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
 
-    user: Mapped["User"] = relationship(back_populates="task")
+    user: Mapped["User"] = relationship(back_populates="tasks")
+
+    def __str__(self):
+        return (
+            f"Task {self.id}, context {self.task}, data create {self.date_create},"
+            f"data exception {self.date_exp}, id user {self.user_id}"
+        )
