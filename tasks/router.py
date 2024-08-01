@@ -6,6 +6,8 @@ from tasks.crud import get_all_tasks_user, add_new_task_bd
 from core.database import get_async_session
 from core.config import templates
 from core.exceptions import ExceptDB
+from users.models import User
+from auth.dependencies import current_active_user
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
@@ -35,10 +37,11 @@ async def add_new_task(
     request: Request,
     task: TaskCreate,
     session: AsyncSession = Depends(get_async_session),
+    user: User = Depends(current_active_user),
 ) -> TaskRead:
     try:
         new_task: TaskRead = await add_new_task_bd(
-            session=session, username="frex@mail.ru", task=task
+            session=session, username=user.email, task=task
         )
     except ExceptDB:
         return templates.TemplateResponse(
