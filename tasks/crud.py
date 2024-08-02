@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING
 import logging
 
-from sqlalchemy import select
+from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.engine import Result
 
 from tasks.models import Task
-from tasks.schemas import TaskCreate, TaskRead
+from tasks.schemas import TaskCreate, TaskRead, TaskOut
 from users.crud import get_user_from_db
 from core.config import configure_logging
 from core.exceptions import ExceptDB
@@ -54,3 +54,24 @@ async def add_new_task_bd(
     await session.commit()
     logger.info(f"new task {new_task}")
     return TaskRead.model_validate(new_task)  # загружаем запись БД в модель pydantic
+
+
+async def get_task_by_id(
+    session: AsyncSession,
+    username: str,
+    id: int,
+):
+    logger.info("Start get task by id")
+    logger.info("Find in bd user %s", username)
+    user: User = await get_user_from_db(session=session, name=username)
+    if not user:
+        logger.info("Not found in bd user %s", username)
+        raise ExceptDB("User not found")
+    stmt = select(Task).filter(and_(Task.id == id, Task.user_id == user.id))
+    result: Result = await session.execute(stmt)
+    task: Task = result.scalars().one_or_none()
+    if not task:
+        logger.info("Not found task user %s by id %s", username, id)
+        raise ExceptDB("Task by id not found")
+
+    return TaskOut(task=task.task, date_create=task.date_create, date_exp=task.date_exp)

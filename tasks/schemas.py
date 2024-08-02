@@ -15,3 +15,9 @@ class TaskRead(TaskCreate):
     id: int
     date_create: datetime
     user_id: int
+
+
+class TaskOut(BaseModel):
+    task: str
+    date_exp: Optional[datetime] = None
+    date_create: datetime

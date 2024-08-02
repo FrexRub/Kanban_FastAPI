@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from tasks.schemas import TaskRead, TaskCreate
-from tasks.crud import get_all_tasks_user, add_new_task_bd
+from tasks.schemas import TaskRead, TaskCreate, TaskOut
+from tasks.crud import get_all_tasks_user, add_new_task_bd, get_task_by_id
 from core.database import get_async_session
 from core.config import templates
 from core.exceptions import ExceptDB
@@ -14,11 +14,13 @@ router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
 @router.get("/")
 async def get_task_user(
-    request: Request, session: AsyncSession = Depends(get_async_session)
+    request: Request,
+    session: AsyncSession = Depends(get_async_session),
+    user: User = Depends(current_active_user),
 ) -> list[TaskRead]:
     try:
         res: list[TaskRead] = await get_all_tasks_user(
-            session=session, username="frex@mail.ru"
+            session=session, username=user.email
         )
     except ExceptDB as exc:
         return templates.TemplateResponse(
@@ -53,3 +55,28 @@ async def add_new_task(
             },
         )
     return new_task
+
+
+@router.get("/task/{id}", response_model=TaskOut)
+async def get_task_user_id(
+    id: int,
+    request: Request,
+    session: AsyncSession = Depends(get_async_session),
+    user: User = Depends(current_active_user),
+) -> TaskOut:
+    try:
+        task: TaskOut = await get_task_by_id(
+            session=session,
+            username=user.email,
+            id=id,
+        )
+    except ExceptDB:
+        return templates.TemplateResponse(
+            request=request,
+            name="error.html",
+            context={
+                "title_error": "Задача не найдена",
+                "text_error": "Ошибка в БД",
+            },
+        )
+    return task
